@@ -6,7 +6,7 @@ import morgan from "morgan";
 import rateLimit from "express-rate-limit";
 import { checkMiddleware } from "./checkMiddleware";
 import { Request, Response, NextFunction } from "express";
-import { json } from "stream/consumers";
+import router from "./routes/v1/rate-limit-route";
 
 export const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 15 minutes
@@ -25,18 +25,7 @@ interface CustomMiddleware extends Request {
 }
 
 app.use(express.json()).use(cors()).use(limiter).use(morgan("dev"));
-
-app.get(
-  "/rate-limit",
-  checkMiddleware,
-  (req: CustomMiddleware, res: Response) => {
-    // throw new Error("error");
-    res.status(200).json({
-      message: "This is a rate-limited endpoint.",
-      userId: req.userid,
-    });
-  }
-);
+app.use("/api/v1", router);
 
 app.use((error: any, req: Request, res: Response, next: NextFunction) => {
   const status = error.status || 500;

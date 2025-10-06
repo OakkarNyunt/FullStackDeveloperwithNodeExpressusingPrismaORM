@@ -4,16 +4,13 @@ interface CustomMiddleware extends Request {
   userid?: number;
 }
 
-export const checkMiddleware = (
+export const rateLimitController = (
   req: CustomMiddleware,
   res: Response,
   next: NextFunction
 ) => {
-  // const err: any = new Error("Token is invalid");
-  // err.status = 401;
-  // err.code = "TOKEN_INVALID";
-  // return next(err);
-
-  req.userid = 1461998;
-  next();
+  res.status(200).json({
+    message: "This is a rate-limited endpoint.",
+    userId: req.userid,
+  });
 };
